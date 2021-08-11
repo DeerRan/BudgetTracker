@@ -1,75 +1,99 @@
-const request = window.indexedDB.open("BudgetDB", 1);
+const request = window.indexedDB.open("BudgetDB", 2);
 
 let db;
 
-request.onupgradeneeded = function (event)
-{
+request.onupgradeneeded = function (event){
+    console.log("Upgrade Success")
     db = event.target.result;
-
-    const budgetStore = db.createObjectStore("budgetStore", {
+    db.createObjectStore("budgetCollection", {
+        keyPath: '_id',
         autoIncrement: true
     });
-
-    budgetStore.createIndex("budgetIndex", "budgetIndex");
 };
 
 request.onsuccess = function (event) 
 {
+    console.log("Request Success")
     db = event.target.result;
-
     if (navigator.onLine) {
-        checkDatabase();
+        bulkPost();
     }
 };
 
 request.onerror = function (event) 
 {
-    const msg = event.target.result
-    
-    console.log(msg.errorCode);
+    const error = event.target.result
+    console.log(error.errorCode);
 };
 
-function saveRecord(record) {
-    db = request.result;
-    const transaction = db.transaction(["budgetStore"], "readWrite");
-    const budgetStore = transaction.objectStore("budgetStore");
+//global variable
 
-    budgetStore.add(record);
+var add;
+
+function populateIndex() {
+    console.log("Initial population func success \n")
+    db = request.result;
+
+    fetch("/api/transaction")
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            data.forEach(element => {
+                const transaction = db.transaction(["budgetCollection"], "readwrite");
+                transaction.oncomplete = (e) => {
+                    console.log(e);
+                };
+                transaction.onerror = (err) => {
+                    console.warn(err)
+                };
+
+                let store = transaction.objectStore('budgetCollection');
+                add = store.add(element);
+                add.onsuccess = e => {
+                    console.log("Added data successfully")
+                }
+                add.onerror = err => {
+                    console.log("Couldn't add data\n" + err);
+                }
+            });
+        });
 };
 
-function checkDatabase() 
-{
+function bulkPost() {
     db = request.result;
 
-    const transaction = db.transaction(["budgetStore"], "readwrite");
-    const budgetStore = transaction.objectStore("budgetStore");
-    const allRecords = budgetStore.getAll();
-    console.log(allRecords);
+    const transaction = db.transaction(["budgetCollection"], "readwrite");
+    const store = transaction.objectStore("budgetCollection");
+    const indexValues = store.getAll();
+    console.log(indexValues);
 
-    allRecords.onsuccess = function() 
-    {
-        if (allRecords.result.length > 0) 
-        {
-            fetch('/api/transaction/bulk',
-            {
+    indexValues.onsuccess = function() {
+        if (indexValues.result.length > 0) {
+            fetch("/api/transaction/bulk", {
                 method: 'POST',
-                body: JSON.stringify(allRecords.result),
+                body: JSON.stringify(indexValues.result),
                 headers: {
                     Accept: 'application/json, text/plain, */*',
                     'Content-Type': 'application/json',
                 },
             })
-            .then((response) => response.json())
+            .then((response) => 
+            response.json()
+            )
             .then(() => 
             {
                 db = request.result;
 
-                const transaction = db.transaction(["budgetStore"], "readwrite");
-                const budgetStore = transaction.objectStore("budgetStore");
+                const transaction = db.transaction(["budgetCollection"], "readwrite");
+                const store = transaction.objectStore("budgetCollection");
 
-                budgetStore.clear();
+                store.clear();
                 window.location.reload();
             });
         }
     };
 };
+
+
+
