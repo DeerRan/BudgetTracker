@@ -42,23 +42,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+  <script src="db.js"></script>
   <script src="index.js"></script>
-  <script src="https://unpkg.com/localbase/dist/localbase.dev.js"></script>
-
-  <script>
-    let db = new Localbase('db');
-    let addbtn = document.querySelector("#add-btn");
-    let subbtn = document.querySelector("#sub-btn")
-
-    addbtn.addEventListener("click", addfunc());
-    subbtn.addEventListener("click", subfunc());
-
-    function addfunc() {
-      db.collection('transactions').add({
-        test: "hello"
-      })
-    }
-
-  </script>
 </body>
 </html>
