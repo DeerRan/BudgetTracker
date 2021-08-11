@@ -6,7 +6,6 @@
 - [Table of Contents](#table-of-contents)
 - [Description](#description)
 - [Screenshots](#screenshots)
-- [Demo](#demo)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contribution](#contribution)
@@ -16,13 +15,11 @@
 - [License](#license)
 - [Deployable Link](#deployable-link)
 ## Description  
-It was supposed to be a budget tracker that functions offline using an indexed database but I couldn't get it to work.
+A Budget tracker that functions online and offline.
 ## Screenshots
-N/a
-## Demo
-N/A
+![Screenshot of program](https://github.com/DeerRan/TechBlog/blob/main/public/icons/Screenshot1.png?raw=true)
 ## Installation
-Grab it off github and run npm install
+Grab it off github and run "npm install" and run "npm run start"
 ## Usage
 It's a budget tracker. Enter your transactions and it display data based on that.
 ## Contribution
