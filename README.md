@@ -17,7 +17,7 @@
 ## Description  
 A Budget tracker that functions online and offline.
 ## Screenshots
-![Screenshot of program](https://github.com/DeerRan/BudgetTracker/blob/main/public/icons/Screenshot1.png?raw=true)
+![Screenshot1](https://user-images.githubusercontent.com/77216956/128981588-f8438d7d-2ff1-47c6-8966-417ef5361253.png)
 ## Installation
 Grab it off github and run "npm install" and run "npm run start"
 ## Usage
